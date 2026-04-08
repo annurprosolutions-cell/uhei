@@ -12,6 +12,9 @@
     <link rel="icon" type="image/png" href="https://i.postimg.cc/1XyKdbY5/image.png">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/1XyKdbY5/image.png">
     
+    <!-- Inline Web App Manifest (Base64) untuk PWA Standalone -->
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiTkVYVVMgSUhTQU4gSE1JIElLTiIsInNob3J0X25hbWUiOiJOZXh1cyBJaHNhbiIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZjFmNWY5IiwidGhlbWVfY29sb3IiOiIjMDA1NWZmIiwiaWNvbnMiOlt7InNyYyI6Imh0dHBzOi8vaS5wb3N0aW1nLmNjLzFYeUtkYlk1L2ltYWdlLnBuZyIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
+
     <!-- Android / Chrome -->
     <meta name="theme-color" content="#0055ff">
     <meta name="mobile-web-app-capable" content="yes">
@@ -507,7 +510,7 @@
         // Data Globals
         let programData = {};
         let pendaftaranCount = {};
-        let pesertaDataMap = {}; // Tambahan: Menyimpan data peserta
+        let pesertaDataMap = {}; 
         let globalProgramList = [];
         let globalJabatanList = [];
         let globalJawatanList = [];
@@ -580,17 +583,14 @@
                 inputNama.addEventListener('input', function() {
                     const val = this.value.toUpperCase().trim();
                     
-                    // Auto-fill logik jika nama ada dalam pangkalan data
                     if (pesertaDataMap[val]) {
                         const dataRow = pesertaDataMap[val];
                         const keys = Object.keys(dataRow);
                         
-                        // Cari kunci (header) lajur secara dinamik
                         const icKey = keys.find(k => k.toLowerCase().includes('k/p') || k.toLowerCase().includes('kad pengenalan') || k.toLowerCase().includes('ic'));
                         const telKey = keys.find(k => k.toLowerCase().includes('telefon') || k.toLowerCase().includes('tel') || k.toLowerCase().includes('hp'));
                         const jabKey = keys.find(k => k.toLowerCase().includes('jabatan') || k.toLowerCase().includes('bahagian'));
                         
-                        // Tetapan spesifik: Jawatan dari Column E (Index 4), Emel dari Column G (Index 6)
                         const jawatanKey = keys.length > 4 ? keys[4] : null;
                         const emelKey = keys.length > 6 ? keys[6] : null;
                         
@@ -598,7 +598,7 @@
                             const icInput = document.getElementById('ic');
                             if (icInput) {
                                 icInput.value = dataRow[icKey];
-                                icInput.dispatchEvent(new Event('input')); // Trigger fungsi kira umur automatik
+                                icInput.dispatchEvent(new Event('input')); 
                             }
                         }
                         if (emelKey && dataRow[emelKey]) {
@@ -612,7 +612,6 @@
                         if (jabKey && dataRow[jabKey]) {
                             const jabInput = document.getElementById('jabatan');
                             if (jabInput) {
-                                // Jika pilihan jabatan tiada dalam senarai asal, tambahkannya
                                 let optionExists = Array.from(jabInput.options).some(opt => opt.value === dataRow[jabKey]);
                                 if (!optionExists) {
                                     const newOpt = document.createElement('option');
@@ -626,7 +625,6 @@
                         if (jawatanKey && dataRow[jawatanKey]) {
                             const jawInput = document.getElementById('jawatan');
                             if (jawInput) {
-                                // Jika pilihan jawatan tiada dalam senarai asal, tambahkannya
                                 let optionExists = Array.from(jawInput.options).some(opt => opt.value === dataRow[jawatanKey]);
                                 if (!optionExists) {
                                     const newOpt = document.createElement('option');
@@ -639,7 +637,6 @@
                         }
                     }
 
-                    // Logik jantina (Bin/Binti)
                     const namaLower = this.value.toLowerCase();
                     const selectJantina = document.getElementById('jantina');
                     if(selectJantina) {
@@ -715,9 +712,13 @@
                                     document.getElementById('modalContent').classList.add('scale-100');
                                 }, 10);
                             }
-                        } else showCustomAlert("Pendaftaran Gagal", data.message);
+                        } else {
+                            showCustomAlert("Pendaftaran Gagal", data.message);
+                        }
                     })
-                    .catch(error => showCustomAlert("Ralat Pelayan", "Sila semak pautan Apps Script anda."))
+                    .catch(error => {
+                        showCustomAlert("Ralat Pelayan", "Sila semak pautan Apps Script anda.");
+                    })
                     .finally(() => {
                         submitBtn.innerHTML = originalBtnText;
                         submitBtn.disabled = false;
@@ -775,10 +776,17 @@
                             }
                             renderAdminProgramList();
                             cancelEditProgram();
-                        } else showCustomAlert("Ralat", data.message);
+                        } else {
+                            showCustomAlert("Ralat", data.message);
+                        }
                     })
-                    .catch(() => showCustomAlert("Ralat Server", "Ralat sistem Apps Script."))
-                    .finally(() => { btn.innerHTML = originalText; btn.disabled = false; });
+                    .catch(() => {
+                        showCustomAlert("Ralat Server", "Ralat sistem Apps Script.");
+                    })
+                    .finally(() => { 
+                        btn.innerHTML = originalText; 
+                        btn.disabled = false; 
+                    });
                 });
             }
 
@@ -826,10 +834,17 @@
                             renderAdminConfigList();
                             renderDropdownConfig();
                             this.reset();
-                        } else showCustomAlert("Ralat", data.message);
+                        } else {
+                            showCustomAlert("Ralat", data.message);
+                        }
                     })
-                    .catch(() => showCustomAlert("Ralat Server", "Ralat sistem Apps Script."))
-                    .finally(() => { btn.innerHTML = originalText; btn.disabled = false; });
+                    .catch(() => {
+                        showCustomAlert("Ralat Server", "Ralat sistem Apps Script.");
+                    })
+                    .finally(() => { 
+                        btn.innerHTML = originalText; 
+                        btn.disabled = false; 
+                    });
                 });
             }
 
@@ -871,10 +886,17 @@
                             }
                             renderAdminConfigList();
                             renderDropdownConfig();
-                        } else showCustomAlert("Ralat", data.message);
+                        } else {
+                            showCustomAlert("Ralat", data.message);
+                        }
                     })
-                    .catch(() => showCustomAlert("Ralat Server", "Ralat sistem Apps Script."))
-                    .finally(() => { btn.innerHTML = originalText; btn.disabled = false; });
+                    .catch(() => {
+                        showCustomAlert("Ralat Server", "Ralat sistem Apps Script.");
+                    })
+                    .finally(() => { 
+                        btn.innerHTML = originalText; 
+                        btn.disabled = false; 
+                    });
                 });
             }
 
@@ -917,8 +939,13 @@
                             showCustomAlert("Ralat", data.message);
                         }
                     })
-                    .catch(() => showCustomAlert("Ralat Server", "Ralat sistem Apps Script."))
-                    .finally(() => { btn.innerHTML = originalText; btn.disabled = false; });
+                    .catch(() => {
+                        showCustomAlert("Ralat Server", "Ralat sistem Apps Script.");
+                    })
+                    .finally(() => { 
+                        btn.innerHTML = originalText; 
+                        btn.disabled = false; 
+                    });
                 });
             }
         }
@@ -992,11 +1019,14 @@
             const landingPage = document.getElementById('landingPage');
             const regPage = document.getElementById('registrationPage');
             
-            landingPage.classList.add('hidden');
-            landingPage.classList.remove('flex');
-            
-            regPage.classList.remove('hidden');
-            regPage.classList.add('flex');
+            if(landingPage) {
+                landingPage.classList.add('hidden');
+                landingPage.classList.remove('flex');
+            }
+            if(regPage) {
+                regPage.classList.remove('hidden');
+                regPage.classList.add('flex');
+            }
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1005,11 +1035,14 @@
             const landingPage = document.getElementById('landingPage');
             const regPage = document.getElementById('registrationPage');
             
-            regPage.classList.add('hidden');
-            regPage.classList.remove('flex');
-            
-            landingPage.classList.remove('hidden');
-            landingPage.classList.add('flex');
+            if(regPage) {
+                regPage.classList.add('hidden');
+                regPage.classList.remove('flex');
+            }
+            if(landingPage) {
+                landingPage.classList.remove('hidden');
+                landingPage.classList.add('flex');
+            }
         }
 
         // ==========================================
@@ -1170,18 +1203,35 @@
                 tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-slate-500">Tiada program direkodkan.</td></tr>';
                 return;
             }
+            
             globalProgramList.forEach((prog, index) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition-colors";
-                tr.innerHTML = `
-                    <td class="px-4 py-3 font-medium text-gov-blue break-words align-top max-w-[150px] md:max-w-xs">${prog['Nama Program']}</td>
-                    <td class="px-4 py-3 align-top break-words">${prog['Tarikh']}<br><span class="text-xs text-slate-400 font-medium">${prog['Masa Mula']} - ${prog['Masa Akhir']}</span></td>
-                    <td class="px-4 py-3 text-center align-top shrink-0">
-                        <button type="button" onclick="editProgramClicked(${index})" class="text-blue-500 hover:text-white bg-blue-50 border border-blue-200 hover:bg-blue-500 p-2 rounded transition-all shadow-sm" title="Kemaskini">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                    </td>
-                `;
+                
+                const tdNama = document.createElement('td');
+                tdNama.className = "px-4 py-3 font-medium text-gov-blue break-words align-top max-w-[150px] md:max-w-xs";
+                tdNama.textContent = prog['Nama Program'];
+                
+                const tdMasa = document.createElement('td');
+                tdMasa.className = "px-4 py-3 align-top break-words";
+                tdMasa.innerHTML = `${prog['Tarikh']}<br><span class="text-xs text-slate-400 font-medium">${prog['Masa Mula']} - ${prog['Masa Akhir']}</span>`;
+                
+                const tdAksi = document.createElement('td');
+                tdAksi.className = "px-4 py-3 text-center align-top shrink-0";
+                
+                const btnEdit = document.createElement('button');
+                btnEdit.type = "button";
+                btnEdit.className = "text-blue-500 hover:text-white bg-blue-50 border border-blue-200 hover:bg-blue-500 p-2 rounded transition-all shadow-sm";
+                btnEdit.title = "Kemaskini";
+                btnEdit.innerHTML = '<i class="fa-solid fa-pen"></i>';
+                btnEdit.onclick = function() {
+                    editProgramClicked(index);
+                };
+                
+                tdAksi.appendChild(btnEdit);
+                tr.appendChild(tdNama);
+                tr.appendChild(tdMasa);
+                tr.appendChild(tdAksi);
                 tbody.appendChild(tr);
             });
         }
@@ -1190,25 +1240,49 @@
             const listJab = document.getElementById('adminJabatanList');
             const listJaw = document.getElementById('adminJawatanList');
             if(!listJab || !listJaw) return;
-            listJab.innerHTML = ''; listJaw.innerHTML = '';
+            
+            listJab.innerHTML = ''; 
+            listJaw.innerHTML = '';
 
             globalJabatanList.forEach(item => {
                 const li = document.createElement('li');
                 li.className = "px-4 py-3 flex justify-between items-start gap-3 hover:bg-slate-50 border-b last:border-0";
-                li.innerHTML = `<span class="flex-grow break-words text-left mt-1 text-slate-700 leading-tight">${item}</span> 
-                                <button onclick="openEditSingleConfig('Jabatan', '${item.replace(/'/g, "\\'")}')" class="shrink-0 text-slate-400 hover:text-blue-600 bg-white border border-slate-200 hover:bg-blue-50 hover:border-blue-300 h-8 w-8 rounded flex items-center justify-center transition-all shadow-sm">
-                                    <i class="fa-solid fa-pen text-xs"></i>
-                                </button>`;
+                
+                const span = document.createElement('span');
+                span.className = "flex-grow break-words text-left mt-1 text-slate-700 leading-tight";
+                span.textContent = item;
+                
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "shrink-0 text-slate-400 hover:text-blue-600 bg-white border border-slate-200 hover:bg-blue-50 hover:border-blue-300 h-8 w-8 rounded flex items-center justify-center transition-all shadow-sm";
+                btn.innerHTML = '<i class="fa-solid fa-pen text-xs"></i>';
+                btn.onclick = function() {
+                    openEditSingleConfig('Jabatan', item);
+                };
+                
+                li.appendChild(span);
+                li.appendChild(btn);
                 listJab.appendChild(li);
             });
 
             globalJawatanList.forEach(item => {
                 const li = document.createElement('li');
                 li.className = "px-4 py-3 flex justify-between items-start gap-3 hover:bg-slate-50 border-b last:border-0";
-                li.innerHTML = `<span class="flex-grow break-words text-left mt-1 text-slate-700 leading-tight">${item}</span> 
-                                <button onclick="openEditSingleConfig('Jawatan', '${item.replace(/'/g, "\\'")}')" class="shrink-0 text-slate-400 hover:text-blue-600 bg-white border border-slate-200 hover:bg-blue-50 hover:border-blue-300 h-8 w-8 rounded flex items-center justify-center transition-all shadow-sm">
-                                    <i class="fa-solid fa-pen text-xs"></i>
-                                </button>`;
+                
+                const span = document.createElement('span');
+                span.className = "flex-grow break-words text-left mt-1 text-slate-700 leading-tight";
+                span.textContent = item;
+                
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "shrink-0 text-slate-400 hover:text-blue-600 bg-white border border-slate-200 hover:bg-blue-50 hover:border-blue-300 h-8 w-8 rounded flex items-center justify-center transition-all shadow-sm";
+                btn.innerHTML = '<i class="fa-solid fa-pen text-xs"></i>';
+                btn.onclick = function() {
+                    openEditSingleConfig('Jawatan', item);
+                };
+                
+                li.appendChild(span);
+                li.appendChild(btn);
                 listJaw.appendChild(li);
             });
         }
